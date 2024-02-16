@@ -20,8 +20,16 @@ public class MyBot extends TelegramLongPollingBot {
         try {
             var message = new SendMessage();
             message.setChatId(chatId);
+
             if (text.equals("/start")) {
                 message.setText("Hello");
+            } else if (text.equals("all")) {
+                var btcPrice = CryptoPrice.spotPrice("BTC");
+                var ethPrice = CryptoPrice.spotPrice("ETH");
+                var dogePrice = CryptoPrice.spotPrice("DOGE");
+                message.setText("BTC price: " + btcPrice.getAmount().doubleValue() + "\n"
+                        + "ETH price: " + ethPrice.getAmount().doubleValue() + "\n"
+                        + "DOGE price: " + dogePrice.getAmount().doubleValue());
             } else {
                 String[] commands = text.split(",");
                 StringBuilder response = new StringBuilder();
@@ -36,24 +44,19 @@ public class MyBot extends TelegramLongPollingBot {
                     } else if (command.equals("doge")) {
                         var price = CryptoPrice.spotPrice("DOGE");
                         response.append("DOGE price: ").append(price.getAmount().doubleValue()).append("\n");
-                    } else if (text.equals("all")) {
-                        var price = CryptoPrice.spotPrice("BTC");
-                        var price1 = CryptoPrice.spotPrice("ETH");
-                        var price2 = CryptoPrice.spotPrice("DOGE");
-                        message.setText("BTC price: " + price.getAmount().doubleValue() + "\n"
-                                + "ETH price: " + price1.getAmount().doubleValue() + "\n"
-                                + "DOGE price: " + price2.getAmount().doubleValue());
                     } else {
                         response.append("Unknown command: ").append(command).append("\n");
                     }
                 }
                 message.setText(response.toString());
             }
+
             execute(message);
         } catch (Exception e) {
             System.out.println("Error");
         }
     }
+
 
 
     @Override
