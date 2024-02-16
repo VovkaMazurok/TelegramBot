@@ -3,6 +3,8 @@ package org.example;
 import net.thauvin.erik.crypto.CryptoPrice;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 
@@ -37,6 +39,7 @@ public class MyBot extends TelegramLongPollingBot {
                     command = command.trim();
                     if (command.equals("btc")) {
                         var price = CryptoPrice.spotPrice("BTC");
+                        sendPicture(chatId, "bitcoin.png");
                         response.append("BTC price: ").append(price.getAmount().doubleValue()).append("\n");
                     } else if (command.equals("eth")) {
                         var price = CryptoPrice.spotPrice("ETH");
@@ -57,6 +60,13 @@ public class MyBot extends TelegramLongPollingBot {
         }
     }
 
+    void sendPicture(long chatId, String image) throws Exception{
+        var photo = getClass().getClassLoader().getResourceAsStream(image);
+        var message = new SendPhoto();
+        message.setChatId(chatId);
+        message.setPhoto(new InputFile(photo, image));
+        execute(message);
+    }
 
 
     @Override
